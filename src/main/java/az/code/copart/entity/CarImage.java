@@ -22,6 +22,7 @@ public class CarImage {
     @JoinColumn(name = "car_id")
     private Car car;
     private String imagePath;
+    private String imageName;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

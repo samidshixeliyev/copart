@@ -16,12 +16,14 @@ public interface ModelMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "name", source = "request.name")
     Model fromCreateToEntity(ModelCreateRequest request, Maker maker);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "maker", source = "maker")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "name", source = "request.name")
     Model fromUpdateToEntity(@MappingTarget Model model, ModelUpdateRequest request, Maker maker);
     ModelResponse fromEntityToResponse(Model model);
 

@@ -14,12 +14,14 @@ public interface CityMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "name", source = "request.name")
     City fromCreateToEntity(CityCreateRequest request, State state);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "state", source = "state")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "name", source = "request.name")
     City fromUpdateToEntity(@MappingTarget City city, CityUpdateRequest request, State state);
     CityResponse fromEntityToResponse(City city);
 }

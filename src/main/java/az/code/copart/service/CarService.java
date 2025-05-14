@@ -9,6 +9,7 @@ import az.code.copart.mapper.CarMapper;
 import az.code.copart.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class CarService {
     private final FuelTypeRepository fuelTypeRepository;
     private final CityRepository cityRepository;
     private final UserRepository userRepository;
+    private final CarImageService carImageService;
 
     // Add methods to interact with the repository and mapper as needed
     public List<CarResponse> getAllCars() {
@@ -39,7 +41,7 @@ public class CarService {
                         .code(404)
                         .build());
     }
-    public CarResponse saveCar(CarCreateRequest request) {
+    public CarResponse saveCar(MultipartFile file,CarCreateRequest request) {
        Maker maker = makerRepository.findById(request.getMakerId()).orElseThrow(() -> CustomException.builder()
                .message("Maker not found" + request.getMakerId())
                .code(404)
@@ -64,11 +66,12 @@ public class CarService {
                .message("User not found" + request.getUserId())
                .code(404)
                .build());
-       CarImage carImage = new CarImage(); // Assuming you have a default constructor
-        return carMapper.fromEntityToResponse(
+        CarResponse carResponse = carMapper.fromEntityToResponse(
                 carRepository.save(
-                        carMapper.fromCreateToEntity(request,maker,model,carType,fuelType,city,user,carImage)
-                        ));
+                        carMapper.fromCreateToEntity(request, maker, model, carType, fuelType, city, user)
+                ));
+        carResponse.setCarImage(carImageService.saveCarImage(file, carResponse.getId()));
+        return carResponse;
 
     }
     public CarResponse updateCar(CarUpdateRequest request) {
@@ -96,14 +99,13 @@ public class CarService {
                 .message("User not found" + request.getUserId())
                 .code(404)
                 .build());
-        CarImage carImage = new CarImage();
         Car car = carRepository.findById(request.getId()).orElseThrow(() -> CustomException.builder()
                 .message("Car not found with id: " + request.getId())
                 .code(404)
                 .build());
         return carMapper.fromEntityToResponse(
                 carRepository.save(
-                        carMapper.fromUpdateToEntity(car,request,maker,model,carType,fuelType,city,user,carImage)
+                        carMapper.fromUpdateToEntity(car,request,maker,model,carType,fuelType,city,user)
                 ));
     }
     public void deleteCar(Long id) {

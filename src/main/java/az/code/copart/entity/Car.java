@@ -49,7 +49,8 @@ public class Car {
     private Double mileage;
     private String address;
     private String description;
-
+    @OneToMany(mappedBy = "car")
+    private List<CarImage> carImage;
     @Type(JsonBinaryType.class)
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "car_feature", columnDefinition = "jsonb")

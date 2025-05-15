@@ -23,6 +23,7 @@ public class CarImage {
     private Car car;
     private String imagePath;
     private String imageName;
+    private String contentType;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

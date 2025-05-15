@@ -16,6 +16,7 @@ import java.util.UUID;
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Object> handleCustomException(CustomException ex) {
+        ex.printStackTrace();
         return ResponseEntity.status(ex.getCode())
                 .body(BaseResponse.builder()
                         .uuid(UUID.randomUUID().toString())
@@ -25,6 +26,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception ex) {
+        ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(BaseResponse.builder()
                         .uuid(UUID.randomUUID().toString())

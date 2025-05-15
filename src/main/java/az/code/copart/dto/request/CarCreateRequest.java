@@ -12,9 +12,10 @@ import java.io.Serializable;
  * DTO for {@link az.code.copart.entity.Car}
  */
 
-@Getter
-@Setter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CarCreateRequest implements Serializable {
     @NotNull
     @Positive

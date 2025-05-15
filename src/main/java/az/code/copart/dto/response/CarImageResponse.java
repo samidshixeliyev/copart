@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class CarImageResponse implements Serializable {
     private Long Id;
     private String imagePath;
+    private String imageName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

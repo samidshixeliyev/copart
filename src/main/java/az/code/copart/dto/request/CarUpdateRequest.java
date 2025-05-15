@@ -9,6 +9,8 @@ import lombok.Setter;
 import lombok.Value;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -42,4 +44,5 @@ public class CarUpdateRequest implements Serializable {
     private Long modelId;
     @NotNull
     private Long makerId;
+
 }

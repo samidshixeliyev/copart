@@ -1,0 +1,98 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: samid
+      changes:
+        - createTable:
+            tableName: author
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: NVARCHAR(255)
+              - column:
+                  name: created_at
+                  type: DATETIME2
+              - column:
+                  name: updated_at
+                  type: DATETIME2
+
+  - changeSet:
+      id: 2
+      author: samid
+      changes:
+        - createTable:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: NVARCHAR(201)
+              - column:
+                  name: created_at
+                  type: DATETIME2
+              - column:
+                  name: updated_at
+                  type: DATETIME2
+
+  - changeSet:
+      id: 3
+      author: samid
+      changes:
+        - createTable:
+            tableName: book
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: title
+                  type: NVARCHAR(255)
+              - column:
+                  name: description
+                  type: NVARCHAR(1200)
+              - column:
+                  name: author_id
+                  type: BIGINT
+              - column:
+                  name: category_id
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: DATETIME2
+              - column:
+                  name: updated_at
+                  type: DATETIME2
+
+  - changeSet:
+      id: 4
+      author: samid
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: book
+            baseColumnNames: author_id
+            referencedTableName: author
+            referencedColumnNames: id
+            constraintName: fk_book_author
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: book
+            baseColumnNames: category_id
+            referencedTableName: category
+            referencedColumnNames: id
+            constraintName: fk_book_category
+            onDelete: CASCADE

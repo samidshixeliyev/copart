@@ -3,6 +3,7 @@ package az.code.copart.mapper;
 import az.code.copart.dto.response.CarImageResponse;
 import az.code.copart.entity.CarImage;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
@@ -10,6 +11,6 @@ import org.mapstruct.ReportingPolicy;
         componentModel = MappingConstants.ComponentModel.SPRING
 )
 public interface CarImageMapper {
-
-    CarImageResponse fromEntityToResponse(CarImage carImage);
+    @Mapping(target = "imagePath", source = "minioImagePath")
+    CarImageResponse fromEntityToResponse(CarImage carImage,String minioImagePath);
 }

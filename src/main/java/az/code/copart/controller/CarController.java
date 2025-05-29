@@ -27,11 +27,11 @@ public class CarController {
 
     @PostMapping
     public ResponseEntity<?> saveCar(@RequestParam(value= "file", required = false) List<MultipartFile> file,
-                                     @RequestPart(name = "data")  CarCreateRequest request) {
+                                     @RequestPart(name = "data")  CarCreateRequest request,@RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok(
                 BaseResponse.builder()
                         .uuid(UUID.randomUUID().toString())
-                        .data(carService.saveCar(file, request))
+                        .data(carService.saveCar(file, request,token))
                         .status(HttpStatus.CREATED.value())
                         .build()
         );
@@ -59,11 +59,11 @@ public class CarController {
 
     @PutMapping
     public ResponseEntity<?> updateCar(@RequestParam(value= "file", required = false) List<MultipartFile> file,
-                                     @RequestPart(name = "data") CarUpdateRequest request){
+                                     @RequestPart(name = "data") CarUpdateRequest request,@RequestHeader(value = "Authorization") String token){
         return ResponseEntity.ok(
                 BaseResponse.builder()
                         .uuid(UUID.randomUUID().toString())
-                        .data(carService.updateCar(file, request))
+                        .data(carService.updateCar(file, request,token))
                         .status(HttpStatus.CREATED.value())
                         .build());
     }

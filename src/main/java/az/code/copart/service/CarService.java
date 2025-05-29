@@ -1,5 +1,7 @@
 package az.code.copart.service;
 
+import az.code.copart.client.AuthClient;
+import az.code.copart.client.response.auth.UserResponse;
 import az.code.copart.dto.request.CarCreateRequest;
 import az.code.copart.dto.request.CarUpdateRequest;
 import az.code.copart.dto.response.CarResponse;
@@ -27,6 +29,7 @@ public class CarService {
     private final CarImageService carImageService;
     private final MinioService minioService;
     private final CarImageRepository carImageRepository;
+    private final AuthClient authClient;
 
     public List<CarResponse> getAllCars() {
         List<Car> cars = carRepository.findAll();
@@ -54,7 +57,7 @@ public class CarService {
 
     }
 
-    public CarResponse saveCar(List<MultipartFile> file, CarCreateRequest request) {
+    public CarResponse saveCar(List<MultipartFile> file, CarCreateRequest request,String token) {
         Maker maker = makerRepository.findById(request.getMakerId()).orElseThrow(() -> CustomException.builder()
                 .message("Maker not found" + request.getMakerId())
                 .code(404)
@@ -75,20 +78,17 @@ public class CarService {
                 .message("City not found" + request.getCityId())
                 .code(404)
                 .build());
-        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> CustomException.builder()
-                .message("User not found" + request.getUserId())
-                .code(404)
-                .build());
+        UserResponse user = authClient.getUserById(request.getUserId());
         CarResponse carResponse = carMapper.fromEntityToResponse(
                 carRepository.save(
-                        carMapper.fromCreateToEntity(request, maker, model, carType, fuelType, city, user)
+                        carMapper.fromCreateToEntity(request, maker, model, carType, fuelType, city, user.getId())
                 ));
         carResponse.setCarImage(carImageService.saveCarImage(file, carResponse.getId()));
         return carResponse;
 
     }
 
-    public CarResponse updateCar(List<MultipartFile> file, CarUpdateRequest request) {
+    public CarResponse updateCar(List<MultipartFile> file, CarUpdateRequest request,String token) {
         Maker maker = makerRepository.findById(request.getMakerId()).orElseThrow(() -> CustomException.builder()
                 .message("Maker not found" + request.getMakerId())
                 .code(404)
@@ -109,17 +109,14 @@ public class CarService {
                 .message("City not found" + request.getCityId())
                 .code(404)
                 .build());
-        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> CustomException.builder()
-                .message("User not found" + request.getUserId())
-                .code(404)
-                .build());
+        UserResponse user = authClient.getUserById(request.getUserId());
         Car car = carRepository.findById(request.getId()).orElseThrow(() -> CustomException.builder()
                 .message("Car not found with id: " + request.getId())
                 .code(404)
                 .build());
         CarResponse carResponse = carMapper.fromEntityToResponse(
                 carRepository.save(
-                        carMapper.fromUpdateToEntity(car, request, maker, model, carType, fuelType, city, user)
+                        carMapper.fromUpdateToEntity(car, request, maker, model, carType, fuelType, city, user.getId())
                 ));
         carResponse.getCarImage().addAll(carImageService.saveCarImage(file, carResponse.getId()));
         return carResponse;

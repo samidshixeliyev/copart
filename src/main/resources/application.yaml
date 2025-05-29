@@ -1,6 +1,8 @@
 spring:
     application:
         name: copart
+    liquibase:
+        change-log: classpath:/db/changelog-master.yaml
     datasource:
         url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/copart}
         username: ${SPRING_DATASOURCE_USERNAME:user}
@@ -9,7 +11,7 @@ spring:
     jpa:
         database-platform: org.hibernate.dialect.PostgreSQLDialect
         hibernate:
-            ddl-auto: update
+            ddl-auto: none
         show-sql: true
         properties:
             hibernate:
@@ -29,12 +31,29 @@ management:
             acces:
         health:
             show-details: always
-minio:
-    url: ${MINIO_ENDPOINT:http://localhost:9000}
-    access-key: ${MINIO_ACCESS_KEY:admin}
-    secret-key: ${MINIO_SECRET_KEY:admin123}
-    bucket: image
 
+feign:
+    client:
+        config:
+            default:
+                connectTimeout: 5000
+                readTimeout: 5000
+                loggerLevel: basic
+
+#minio:
+#    url: ${MINIO_ENDPOINT:http://localhost:9000}
+#    access-key: ${MINIO_ACCESS_KEY:admin}
+#    secret-key: ${MINIO_SECRET_KEY:admin123}
+#    bucket: image
+
+server:
+    port: 8080
+
+client:
+    ms-auth:
+        endpoint: ${MS_AUTH_URL:http://localhost:8082/api/v1}
+    ms-file:
+        endpoint: ${MS_FILE_URL:http://localhost:8085/api/v1}
 
 
 

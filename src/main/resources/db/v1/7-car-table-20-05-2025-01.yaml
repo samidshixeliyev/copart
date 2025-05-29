@@ -1,0 +1,135 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-car-table
+      author: yourname
+      changes:
+        - createTable:
+            tableName: car
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: maker_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: model_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: car_type_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: fuel_type_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: city_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+
+              - column:
+                  name: year
+                  type: INTEGER
+
+              - column:
+                  name: price
+                  type: NUMERIC(12,2)
+
+              - column:
+                  name: color
+                  type: VARCHAR(100)
+
+              - column:
+                  name: vin
+                  type: VARCHAR(100)
+
+              - column:
+                  name: mileage
+                  type: NUMERIC(10,2)
+
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+
+              - column:
+                  name: description
+                  type: TEXT
+
+              - column:
+                  name: car_feature
+                  type: jsonb
+
+              - column:
+                  name: deleted
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+
+              - column:
+                  name: deleted_at
+                  type: TIMESTAMP
+
+        - addForeignKeyConstraint:
+            baseTableName: car
+            baseColumnNames: maker_id
+            constraintName: fk_car_maker
+            referencedTableName: maker
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: car
+            baseColumnNames: model_id
+            constraintName: fk_car_model
+            referencedTableName: model
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: car
+            baseColumnNames: car_type_id
+            constraintName: fk_car_car_type
+            referencedTableName: car_type
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: car
+            baseColumnNames: fuel_type_id
+            constraintName: fk_car_fuel_type
+            referencedTableName: fuel_type
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            baseTableName: car
+            baseColumnNames: city_id
+            constraintName: fk_car_city
+            referencedTableName: city
+            referencedColumnNames: id

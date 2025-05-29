@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3-create-fuel-type-table
+      author: samid shixaliyev
+      changes:
+        - createTable:
+            tableName: fuel_type
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: NVARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: now()
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: now()

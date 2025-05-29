@@ -19,7 +19,6 @@ public class MakerController {
     private final MakerService makerService;
     @PostMapping
     public ResponseEntity<?> save(@RequestBody MakerCreateRequest request) {
-        makerService.saveMaker(request);
         return new ResponseEntity<>(BaseResponse.builder()
                 .uuid(UUID.randomUUID().toString())
                 .data(makerService.saveMaker(request))

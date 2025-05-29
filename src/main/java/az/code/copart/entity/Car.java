@@ -39,9 +39,8 @@ public class Car {
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+
+    private Long userId;
     private Integer year;
     private Double price;
     private String color;
@@ -49,8 +48,7 @@ public class Car {
     private Double mileage;
     private String address;
     private String description;
-    @OneToMany(mappedBy = "car")
-    private List<CarImage> carImage;
+
     @Type(JsonBinaryType.class)
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "car_feature", columnDefinition = "jsonb")

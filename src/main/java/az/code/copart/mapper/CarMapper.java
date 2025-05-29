@@ -17,7 +17,7 @@ public interface CarMapper {
     @Mapping(target = "carType", source = "carType")
     @Mapping(target = "fuelType", source = "fuelType")
     @Mapping(target = "city", source = "city")
-    @Mapping(target = "user", source = "user")
+    @Mapping(target = "userId", source = "userId")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
@@ -27,14 +27,14 @@ public interface CarMapper {
                            CarType carType,
                            FuelType fuelType,
                            City city,
-                           User user);
+                           Long userId);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "maker", source = "maker")
     @Mapping(target = "model", source = "model")
     @Mapping(target = "carType", source = "carType")
     @Mapping(target = "fuelType", source = "fuelType")
     @Mapping(target = "city", source = "city")
-    @Mapping(target = "user", source = "user")
+    @Mapping(target = "userId", source = "userId")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
@@ -45,6 +45,6 @@ public interface CarMapper {
                            CarType carType,
                            FuelType fuelType,
                            City city,
-                           User user);
+                           Long userId);
     CarResponse fromEntityToResponse(Car car);
 }

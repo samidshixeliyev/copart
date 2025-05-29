@@ -30,7 +30,7 @@ public class StateController {
                 .ok()
                 .build();
     }
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> getAll() {
         return new ResponseEntity<>(BaseResponse.builder()
                 .uuid(UUID.randomUUID().toString())

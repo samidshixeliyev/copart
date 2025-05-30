@@ -9,7 +9,7 @@ import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
-uses = {MakerMapper.class, ModelMapper.class, CarTypeMapper.class, FuelTypeMapper.class,UserMapper.class, CityMapper.class}
+uses = {MakerMapper.class, ModelMapper.class, CarTypeMapper.class, FuelTypeMapper.class, CityMapper.class}
 )
 public interface CarMapper {
     @Mapping(target = "maker", source = "maker")

@@ -1,6 +1,7 @@
 package az.code.copart.service;
 
 import az.code.copart.client.AuthClient;
+import az.code.copart.client.FileClient;
 import az.code.copart.client.response.auth.UserResponse;
 import az.code.copart.dto.request.CarCreateRequest;
 import az.code.copart.dto.request.CarUpdateRequest;
@@ -25,19 +26,14 @@ public class CarService {
     private final CarTypeRepository carTypeRepository;
     private final FuelTypeRepository fuelTypeRepository;
     private final CityRepository cityRepository;
-    private final UserRepository userRepository;
-    private final CarImageService carImageService;
-    private final MinioService minioService;
-    private final CarImageRepository carImageRepository;
     private final AuthClient authClient;
+    private final FileClient fileClient;
 
     public List<CarResponse> getAllCars() {
         List<Car> cars = carRepository.findAll();
         return cars.stream()
                 .map(carMapper::fromEntityToResponse)
-                .peek(t
-                        -> t.getCarImage().forEach(c
-                                -> c.setImagePath(minioService.getFileUrl(c.getImageName()))))
+                .peek(f ->f.setFileResponses(fileClient.getFilesByCarId(f.getId()).getBody()))
                 .toList();
     }
 
@@ -46,10 +42,9 @@ public class CarService {
                 .map(carMapper::fromEntityToResponse)
                 .map(carResponse -> {
                     carResponse
-                            .getCarImage()
-                            .forEach(image->image.setImagePath(
-                                    minioService.getFileUrl(image.getImageName())));
-                return carResponse;})
+                            .setFileResponses(fileClient.getFilesByCarId(id).getBody());
+                return carResponse;
+                })
                 .orElseThrow(() -> CustomException.builder()
                         .message("Car not found with id: " + id)
                         .code(404)
@@ -79,13 +74,13 @@ public class CarService {
                 .code(404)
                 .build());
         UserResponse user = authClient.getUserById(request.getUserId());
+
         CarResponse carResponse = carMapper.fromEntityToResponse(
                 carRepository.save(
                         carMapper.fromCreateToEntity(request, maker, model, carType, fuelType, city, user.getId())
                 ));
-        carResponse.setCarImage(carImageService.saveCarImage(file, carResponse.getId()));
+        file.forEach(file1 ->  fileClient.uploadFile(file1, carResponse.getId()));
         return carResponse;
-
     }
 
     public CarResponse updateCar(List<MultipartFile> file, CarUpdateRequest request,String token) {
@@ -118,11 +113,12 @@ public class CarService {
                 carRepository.save(
                         carMapper.fromUpdateToEntity(car, request, maker, model, carType, fuelType, city, user.getId())
                 ));
-        carResponse.getCarImage().addAll(carImageService.saveCarImage(file, carResponse.getId()));
+        file.forEach(file1 ->  fileClient.uploadFile(file1, carResponse.getId()));
         return carResponse;
     }
 
     public void deleteCar(Long id) {
+        fileClient.deleteAllFilesByCarId(id);
         carRepository.deleteById(id);
     }
 

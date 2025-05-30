@@ -27,7 +27,7 @@ public class CarResponse {
     private Double mileage;
     private String address;
     private String description;
-    private List<CarImageResponse> carImage;
+    private List<FileResponse> fileResponses;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

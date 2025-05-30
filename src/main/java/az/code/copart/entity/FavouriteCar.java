@@ -23,9 +23,8 @@ public class FavouriteCar {
     @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+
+    private Long userId;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

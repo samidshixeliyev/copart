@@ -28,7 +28,6 @@ public class FeignClientInterceptorConfig {
             }
         }));
     }
-
     @Bean
     public RequestInterceptor requestInterceptor() {
         return new RequestInterceptor() {

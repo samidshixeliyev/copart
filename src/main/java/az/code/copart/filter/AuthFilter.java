@@ -1,6 +1,7 @@
 package az.code.copart.filter;
 
 import az.code.copart.client.AuthClient;
+import az.code.copart.handler.CustomException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,15 +22,22 @@ public class AuthFilter extends OncePerRequestFilter {
         String authorization = request.getHeader("Authorization");
         System.out.println(authorization);
         if (authorization != null && authorization.startsWith("Bearer ")) {
-            String bearer = authorization.substring(7);
-            try {
-                authClient.checkAccess(bearer);
+                String bearer = authorization.substring(7);
+                try {
+                    authClient.checkAccess(bearer);
+                } catch (CustomException e) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json"); // Set the Content-Type header
+                    response.setCharacterEncoding("UTF-8"); // Optional but recommended for proper character handling
+
+                    response.getWriter().write("{\n" +
+                            "  \"message\": \"" + e.getMessage() + "\",\n" +
+                            "  \"code\": " + e.getCode() + ",\n" +
+                            "  \"url\":\"" + request.getRequestURI() + "\"\n" +
+                            "}");
+                    return;
+                }
                 filterChain.doFilter(request, response);
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid token");
-            }
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);}
     }

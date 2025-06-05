@@ -2,12 +2,18 @@ package az.code.copart.service;
 
 import az.code.copart.dto.request.CarTypeCreateRequest;
 import az.code.copart.dto.request.CarTypeUpdateRequest;
+import az.code.copart.dto.request.filter.CarTypeCriteria;
 import az.code.copart.dto.response.CarTypeResponse;
+import az.code.copart.dto.response.PageableResponse;
 import az.code.copart.entity.CarType;
 import az.code.copart.handler.CustomException;
 import az.code.copart.mapper.CarTypeMapper;
+import az.code.copart.mapper.PageableMapper;
 import az.code.copart.repository.CarTypeRepository;
+import az.code.copart.service.filter.CarTypeSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,12 +23,21 @@ import java.util.List;
 public class CarTypeService {
     private final CarTypeRepository carTypeRepository;
     private final CarTypeMapper carTypeMapper;
+    private final PageableMapper pageableMapper;
     // Add methods to interact with the repository and mapper as needed
     public List<CarTypeResponse> getAllCarTypes() {
         return carTypeRepository.findAll()
                 .stream()
                 .map(carTypeMapper::fromEntityToResponse)
                 .toList();
+    }
+
+    public PageableResponse<CarTypeResponse> getAllCarTypes(Pageable pageable, CarTypeCriteria criteria) {
+
+        Page<CarType> all = carTypeRepository.findAll(new CarTypeSpecification(criteria), pageable);
+        return pageableMapper.fromCarTypeEntityToPageableResponse(all);
+
+
     }
     public CarTypeResponse getCarTypeById(Long id) {
         return carTypeRepository.findById(id)

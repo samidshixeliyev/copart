@@ -47,7 +47,7 @@ feign:
 #    bucket: image
 
 server:
-    port: 8080
+    port: 8083
 
 client:
     ms-auth:

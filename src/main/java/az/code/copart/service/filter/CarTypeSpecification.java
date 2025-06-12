@@ -21,7 +21,7 @@ public class CarTypeSpecification implements Specification<CarType> {
         List<Predicate> predicates = new ArrayList<>();
         if(carTypeCriteria != null) {
             if(carTypeCriteria.getName() != null && !carTypeCriteria.getName().isEmpty()) {
-                predicates.add(criteriaBuilder.like(root.get("name"), "%" + carTypeCriteria.getName() + "%"));
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + carTypeCriteria.getName().toLowerCase() + "%"));
             }
         }
         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

@@ -12,10 +12,10 @@ import java.util.List;
 
 @FeignClient(name = "ms-auth", url = "${client.ms-auth.endpoint}",configuration = FeignClientInterceptorConfig.class)
 public interface AuthClient {
-    @GetMapping("/user/all")
+    @GetMapping("/auth/user/all")
     List<UserResponse> getUsers();
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/auth/user/{userId}")
     UserResponse getUserById(@PathVariable(name = "userId") Long userId);
 
     @PostMapping("/auth/access")

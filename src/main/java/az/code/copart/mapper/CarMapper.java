@@ -1,5 +1,6 @@
 package az.code.copart.mapper;
 
+import az.code.copart.client.response.auth.UserResponse;
 import az.code.copart.dto.request.CarCreateRequest;
 import az.code.copart.dto.request.CarTypeUpdateRequest;
 import az.code.copart.dto.request.CarUpdateRequest;
@@ -46,5 +47,7 @@ public interface CarMapper {
                            FuelType fuelType,
                            City city,
                            Long userId);
-    CarResponse fromEntityToResponse(Car car);
+    @Mapping(target ="user",source = "user")
+    @Mapping(target = "id", source = "car.id")
+    CarResponse fromEntityToResponse(Car car, UserResponse user);
 }

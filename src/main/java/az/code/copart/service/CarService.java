@@ -32,14 +32,14 @@ public class CarService {
     public List<CarResponse> getAllCars() {
         List<Car> cars = carRepository.findAll();
         return cars.stream()
-                .map(carMapper::fromEntityToResponse)
+                .map(car -> carMapper.fromEntityToResponse(car, authClient.getUserById(car.getUserId())))
                 .peek(f ->f.setFileResponses(fileClient.getFilesByCarId(f.getId()).getBody()))
                 .toList();
     }
 
     public CarResponse getCarById(Long id) {
         return carRepository.findById(id)
-                .map(carMapper::fromEntityToResponse)
+                .map(car->carMapper.fromEntityToResponse(car,authClient.getUserById(car.getUserId())))
                 .map(carResponse -> {
                     carResponse
                             .setFileResponses(fileClient.getFilesByCarId(id).getBody());
@@ -78,8 +78,10 @@ public class CarService {
         CarResponse carResponse = carMapper.fromEntityToResponse(
                 carRepository.save(
                         carMapper.fromCreateToEntity(request, maker, model, carType, fuelType, city, user.getId())
-                ));
+                ),user);
+
         file.forEach(file1 ->  fileClient.uploadFile(file1, carResponse.getId()));
+        carResponse.setFileResponses(fileClient.getFilesByCarId(carResponse.getId()).getBody());
         return carResponse;
     }
 
@@ -112,7 +114,7 @@ public class CarService {
         CarResponse carResponse = carMapper.fromEntityToResponse(
                 carRepository.save(
                         carMapper.fromUpdateToEntity(car, request, maker, model, carType, fuelType, city, user.getId())
-                ));
+                ),user);
         file.forEach(file1 ->  fileClient.uploadFile(file1, carResponse.getId()));
         return carResponse;
     }

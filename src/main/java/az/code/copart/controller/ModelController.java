@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/model")
+@RequestMapping("/api/v1/copart/model")
 @RequiredArgsConstructor
 public class ModelController {
     private final ModelService modelService;

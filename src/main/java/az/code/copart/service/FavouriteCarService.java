@@ -4,14 +4,21 @@ import az.code.copart.client.AuthClient;
 import az.code.copart.client.response.auth.UserResponse;
 import az.code.copart.dto.request.FavouriteCarCreateRequest;
 import az.code.copart.dto.request.FavouriteCarUpdateRequest;
+import az.code.copart.dto.request.filter.CityCriteria;
+import az.code.copart.dto.response.CityResponse;
 import az.code.copart.dto.response.FavouriteCarResponse;
+import az.code.copart.dto.response.PageableResponse;
 import az.code.copart.entity.Car;
+import az.code.copart.entity.City;
 import az.code.copart.entity.FavouriteCar;
 import az.code.copart.handler.CustomException;
 import az.code.copart.mapper.FavouriteCarMapper;
 import az.code.copart.repository.CarRepository;
 import az.code.copart.repository.FavouriteCarRepository;
+import az.code.copart.service.filter.CitySpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +30,6 @@ public class FavouriteCarService {
     private final FavouriteCarMapper favouriteCarMapper;
     private final CarRepository carRepository;
     private final AuthClient authClient;
-
     // Add methods to interact with the repository and mapper as needed
     public List<FavouriteCarResponse> getAllFavouriteCars() {
         return favouriteCarRepository.findAll()
@@ -67,6 +73,7 @@ public class FavouriteCarService {
                         ));
     }
     public void deleteFavouriteCar(Long id) {
+
         favouriteCarRepository.deleteById(id);
     }
 

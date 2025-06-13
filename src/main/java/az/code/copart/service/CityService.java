@@ -2,15 +2,25 @@ package az.code.copart.service;
 
 import az.code.copart.dto.request.CityCreateRequest;
 import az.code.copart.dto.request.CityUpdateRequest;
+import az.code.copart.dto.request.filter.CarTypeCriteria;
+import az.code.copart.dto.request.filter.CityCriteria;
+import az.code.copart.dto.response.CarTypeResponse;
 import az.code.copart.dto.response.CityResponse;
+import az.code.copart.dto.response.PageableResponse;
+import az.code.copart.entity.CarType;
 import az.code.copart.entity.City;
 import az.code.copart.entity.State;
 import az.code.copart.handler.CustomException;
 import az.code.copart.mapper.CityMapper;
+import az.code.copart.mapper.PageableMapper;
 import az.code.copart.repository.CityRepository;
 import az.code.copart.repository.StateRepository;
+import az.code.copart.service.filter.CarTypeSpecification;
+import az.code.copart.service.filter.CitySpecification;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,14 +33,22 @@ public class CityService {
     private final CityRepository cityRepository;
     private final CityMapper cityMapper;
     private final StateRepository stateRepository;
+    private final PageableMapper pageableMapper;
 
     // Add methods to interact with the repository and mapper as needed
+
     public List<CityResponse> findAll() {
         return cityRepository
                 .findAll()
                 .stream()
                 .map(cityMapper::fromEntityToResponse)
                 .toList();
+    }
+
+    public PageableResponse<CityResponse> getAllCities(Pageable pageable, CityCriteria criteria) {
+
+        Page<City> all = cityRepository.findAll(new CitySpecification(criteria), pageable);
+        return pageableMapper.fromCityEntityToPageableResponse(all);
     }
     public CityResponse findById(Long id) {
         return cityRepository

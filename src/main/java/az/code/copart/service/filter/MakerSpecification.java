@@ -15,7 +15,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class MakerSpecification implements Specification<Maker> {
-
     private final MakerCriteria makerCriteria;
     @Override
     public Predicate toPredicate(Root<Maker> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {

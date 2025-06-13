@@ -2,10 +2,13 @@ package az.code.copart.controller;
 
 import az.code.copart.dto.request.CityCreateRequest;
 import az.code.copart.dto.request.CityUpdateRequest;
+import az.code.copart.dto.request.filter.CarTypeCriteria;
+import az.code.copart.dto.request.filter.CityCriteria;
 import az.code.copart.dto.response.BaseResponse;
 import az.code.copart.entity.City;
 import az.code.copart.service.CityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +44,14 @@ public class CityController {
                         .data(cityService.findAll())
                         .status(HttpStatus.OK.value())
                         .build());
+    }
+    @GetMapping
+    public ResponseEntity<?> getAll(Pageable pageable, CityCriteria criteria) {
+        return ResponseEntity.ok(BaseResponse.builder()
+                .uuid(UUID.randomUUID().toString())
+                .data(cityService.getAllCities(pageable, criteria))
+                .status(HttpStatus.OK.value())
+                .build());
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {

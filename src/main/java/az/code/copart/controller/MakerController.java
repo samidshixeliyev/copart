@@ -2,10 +2,13 @@ package az.code.copart.controller;
 
 import az.code.copart.dto.request.MakerCreateRequest;
 import az.code.copart.dto.request.MakerUpdateRequest;
+import az.code.copart.dto.request.filter.CityCriteria;
+import az.code.copart.dto.request.filter.MakerCriteria;
 import az.code.copart.dto.response.BaseResponse;
 import az.code.copart.entity.Maker;
 import az.code.copart.service.MakerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +43,14 @@ public class MakerController {
                         .data(makerService.findAll())
                         .status(HttpStatus.OK.value())
                         .build());
+    }
+    @GetMapping
+    public ResponseEntity<?> getAll(Pageable pageable, MakerCriteria criteria) {
+        return ResponseEntity.ok(BaseResponse.builder()
+                .uuid(UUID.randomUUID().toString())
+                .data(makerService.getAllMakers(pageable, criteria))
+                .status(HttpStatus.OK.value())
+                .build());
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {

@@ -2,12 +2,22 @@ package az.code.copart.service;
 
 import az.code.copart.dto.request.MakerCreateRequest;
 import az.code.copart.dto.request.MakerUpdateRequest;
+import az.code.copart.dto.request.filter.CityCriteria;
+import az.code.copart.dto.request.filter.MakerCriteria;
+import az.code.copart.dto.response.CityResponse;
 import az.code.copart.dto.response.MakerResponse;
+import az.code.copart.dto.response.PageableResponse;
+import az.code.copart.entity.City;
 import az.code.copart.entity.Maker;
 import az.code.copart.handler.CustomException;
 import az.code.copart.mapper.MakerMapper;
+import az.code.copart.mapper.PageableMapper;
 import az.code.copart.repository.MakerRepository;
+import az.code.copart.service.filter.CitySpecification;
+import az.code.copart.service.filter.MakerSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +27,7 @@ import java.util.List;
 public class MakerService {
     private final MakerRepository makerRepository;
     private final MakerMapper makerMapper;
+    private final PageableMapper pageableMapper;
     // Add methods to interact with the repository and mapper as needed
     public List<MakerResponse> findAll() {
         return makerRepository
@@ -24,6 +35,11 @@ public class MakerService {
                 .stream()
                 .map(makerMapper::fromEntityToResponse)
                 .toList();
+    }
+    public PageableResponse<MakerResponse> getAllMakers(Pageable pageable, MakerCriteria criteria) {
+
+        Page<Maker> all = makerRepository.findAll(new MakerSpecification(criteria), pageable);
+        return pageableMapper.fromMakerEntityToPageableResponse(all);
     }
     public MakerResponse findById(Long id) {
         return makerRepository

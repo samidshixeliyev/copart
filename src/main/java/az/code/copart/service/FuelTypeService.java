@@ -2,12 +2,22 @@ package az.code.copart.service;
 
 import az.code.copart.dto.request.FuelTypeCreateRequest;
 import az.code.copart.dto.request.FuelTypeUpdateRequest;
+import az.code.copart.dto.request.filter.CityCriteria;
+import az.code.copart.dto.request.filter.FuelTypeCriteria;
+import az.code.copart.dto.response.CityResponse;
 import az.code.copart.dto.response.FuelTypeResponse;
+import az.code.copart.dto.response.PageableResponse;
+import az.code.copart.entity.City;
 import az.code.copart.entity.FuelType;
 import az.code.copart.handler.CustomException;
 import az.code.copart.mapper.FuelTypeMapper;
+import az.code.copart.mapper.PageableMapper;
 import az.code.copart.repository.FuelTypeRepository;
+import az.code.copart.service.filter.CitySpecification;
+import az.code.copart.service.filter.FuelTypeSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +27,7 @@ import java.util.List;
 public class FuelTypeService {
     private final FuelTypeRepository fuelTypeRepository;
     private final FuelTypeMapper fuelTypeMapper;
+    private final PageableMapper pageableMapper;
     // Add methods to interact with the repository and mapper as needed
     public List<FuelTypeResponse> findAll() {
         return fuelTypeRepository
@@ -24,6 +35,12 @@ public class FuelTypeService {
                 .stream()
                 .map(fuelTypeMapper::fromEntityToResponse)
                 .toList();
+    }
+
+    public PageableResponse<FuelTypeResponse> getAllFuelTypes(Pageable pageable, FuelTypeCriteria criteria) {
+
+        Page<FuelType> all = fuelTypeRepository.findAll(new FuelTypeSpecification(criteria), pageable);
+        return pageableMapper.fromFuelTypeEntityToPageableResponse(all);
     }
     public FuelTypeResponse findById(Long id) {
         return fuelTypeRepository

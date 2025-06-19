@@ -14,10 +14,10 @@ import java.util.List;
 public interface AuthClient {
     @GetMapping("/auth/user/all")
     List<UserResponse> getUsers();
-
     @GetMapping("/auth/user/{userId}")
     UserResponse getUserById(@PathVariable(name = "userId") Long userId);
-
     @PostMapping("/auth/access")
     Void checkAccess(@RequestHeader(name="access-token") String accessToken);
+    @PostMapping("/auth/check-permission")
+    Void editableUser(@RequestHeader(name="access-token") String accessToken);
 }

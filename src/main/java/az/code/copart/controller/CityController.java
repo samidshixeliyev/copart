@@ -22,16 +22,18 @@ public class CityController {
     private final CityService cityService;
     // Implement the methods for handling city-related requests here
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody CityCreateRequest request) {
+    public ResponseEntity<?> save(@RequestBody CityCreateRequest request,@RequestHeader String authorization) {
+        String token = authorization.substring(7);
         return new ResponseEntity<>(BaseResponse.builder()
                 .uuid(UUID.randomUUID().toString())
-                .data(cityService.saveCity(request))
+                .data(cityService.saveCity(request,token))
                 .status(HttpStatus.CREATED.value())
                 .build(), HttpStatus.OK);
     }
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody CityUpdateRequest request) {
-        cityService.updateCity(request);
+    public ResponseEntity<?> update(@RequestBody CityUpdateRequest request,@RequestHeader String authorization) {
+        String token = authorization.substring(7);
+        cityService.updateCity(request,token);
         return ResponseEntity
                 .ok()
                 .build();
@@ -61,8 +63,9 @@ public class CityController {
                 .data(cityService.findById(id)).build());
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        cityService.deleteCity(id);
+    public ResponseEntity<?> delete(@PathVariable Long id,@RequestHeader String authorization) {
+        String token = authorization.substring(7);
+        cityService.deleteCity(id,token);
         return ResponseEntity
                 .noContent()
                 .build();

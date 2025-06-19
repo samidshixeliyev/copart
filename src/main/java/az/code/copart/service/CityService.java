@@ -1,5 +1,6 @@
 package az.code.copart.service;
 
+import az.code.copart.client.AuthClient;
 import az.code.copart.dto.request.CityCreateRequest;
 import az.code.copart.dto.request.CityUpdateRequest;
 import az.code.copart.dto.request.filter.CarTypeCriteria;
@@ -34,6 +35,7 @@ public class CityService {
     private final CityMapper cityMapper;
     private final StateRepository stateRepository;
     private final PageableMapper pageableMapper;
+    private final AuthClient authClient;
 
     // Add methods to interact with the repository and mapper as needed
 
@@ -59,7 +61,7 @@ public class CityService {
                         .code(404)
                         .build());
     }
-    public CityResponse saveCity(CityCreateRequest request) {
+    public CityResponse saveCity(CityCreateRequest request,String token) {
         if (cityRepository.existsByName(request.getName())) {
             throw CustomException.builder()
                     .code(409)
@@ -78,7 +80,7 @@ public class CityService {
 
 
     }
-    public CityResponse updateCity( CityUpdateRequest request) {
+    public CityResponse updateCity( CityUpdateRequest request,String token) {
         if (cityRepository.existsByName(request.getName())) {
             throw CustomException.builder()
                     .code(409)
@@ -95,7 +97,7 @@ public class CityService {
                 .build());
         return cityMapper.fromEntityToResponse(cityRepository.save(cityMapper.fromUpdateToEntity(city, request, state)));
     }
-    public void deleteCity(Long id) {
+    public void deleteCity(Long id,String token) {
         cityRepository.deleteById(id);
     }
 }

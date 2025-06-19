@@ -1,5 +1,6 @@
 package az.code.copart.service;
 
+import az.code.copart.client.AuthClient;
 import az.code.copart.dto.request.MakerCreateRequest;
 import az.code.copart.dto.request.MakerUpdateRequest;
 import az.code.copart.dto.request.filter.CityCriteria;
@@ -28,6 +29,7 @@ public class MakerService {
     private final MakerRepository makerRepository;
     private final MakerMapper makerMapper;
     private final PageableMapper pageableMapper;
+    private final AuthClient authClient;
     // Add methods to interact with the repository and mapper as needed
     public List<MakerResponse> findAll() {
         return makerRepository
@@ -50,7 +52,8 @@ public class MakerService {
                         .message("Maker not found")
                         .build());
     }
-    public MakerResponse saveMaker(MakerCreateRequest request) {
+    public MakerResponse saveMaker(MakerCreateRequest request,String token) {
+        authClient.editableUser(token);
         if(makerRepository.existsByName(request.getName())){
             throw CustomException.builder()
                     .code(409)
@@ -64,7 +67,8 @@ public class MakerService {
                         ));
 
     }
-    public MakerResponse updateMaker(MakerUpdateRequest request) {
+    public MakerResponse updateMaker(MakerUpdateRequest request,String token) {
+        authClient.editableUser(token);
         if(makerRepository.existsByName(request.getName())){
             throw CustomException.builder()
                     .code(409)
@@ -83,7 +87,8 @@ public class MakerService {
                                 (makerMapper.fromUpdateToEntity(maker,request))
                         ));
     }
-    public void deleteMaker(Long id) {
+    public void deleteMaker(Long id,String token) {
+        authClient.editableUser(token);
         makerRepository.deleteById(id);
     }
 

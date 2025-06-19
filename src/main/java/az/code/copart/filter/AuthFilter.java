@@ -17,14 +17,27 @@ import java.io.IOException;
 public class AuthFilter extends OncePerRequestFilter {
     private final AuthClient authClient;
 
+    private boolean isRoleProtectedPath(String path) {
+        return path.startsWith("/api/maker")
+                || path.startsWith("/api/model")
+                || path.startsWith("/api/city");
+    }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
-        System.out.println(authorization);
+//        System.out.println(authorization);
         if (authorization != null && authorization.startsWith("Bearer ")) {
                 String bearer = authorization.substring(7);
+                String method = request.getMethod();
+                String path = request.getRequestURI();
                 try {
-                    authClient.checkAccess(bearer);
+                    if(method.equalsIgnoreCase("GET")) {
+                        authClient.checkAccess(bearer);
+                    } else if  (isRoleProtectedPath(path)) {
+                        authClient.editableUser(authorization);
+                        authClient.checkAccess(bearer);
+                    }
+
                 } catch (CustomException e) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json"); // Set the Content-Type header

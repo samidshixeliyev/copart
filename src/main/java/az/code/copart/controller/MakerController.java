@@ -21,16 +21,18 @@ import java.util.UUID;
 public class MakerController {
     private final MakerService makerService;
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody MakerCreateRequest request) {
+    public ResponseEntity<?> save(@RequestBody MakerCreateRequest request,@RequestHeader String authorization) {
+        String token = authorization.substring(7);
         return new ResponseEntity<>(BaseResponse.builder()
                 .uuid(UUID.randomUUID().toString())
-                .data(makerService.saveMaker(request))
+                .data(makerService.saveMaker(request,token))
                 .status(HttpStatus.CREATED.value())
                 .build(), HttpStatus.CREATED);
     }
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody MakerUpdateRequest request) {
-        makerService.updateMaker(request);
+    public ResponseEntity<?> update(@RequestBody MakerUpdateRequest request,@RequestHeader String authorization) {
+        String token = authorization.substring(7);
+        makerService.updateMaker(request,token);
         return ResponseEntity
                 .ok()
                 .build();
@@ -60,8 +62,9 @@ public class MakerController {
                 .data(makerService.findById(id)).build());
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        makerService.deleteMaker(id);
+    public ResponseEntity<?> delete(@PathVariable Long id,@RequestHeader String authorization) {
+        String token = authorization.substring(7);
+        makerService.deleteMaker(id,token);
         return ResponseEntity
                 .ok(BaseResponse.builder()
                         .uuid(UUID.randomUUID().toString())

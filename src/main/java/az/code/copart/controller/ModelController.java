@@ -15,22 +15,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/copart/model")
+@RequestMapping("/api/v1/model")
 @RequiredArgsConstructor
 public class ModelController {
     private final ModelService modelService;
     // Add methods to handle requests related to models
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody ModelCreateRequest request) {
+    public ResponseEntity<?> save(@RequestBody ModelCreateRequest request,@RequestHeader String authorization) {
+        String token = authorization.substring(7); // "Bearer " silinir
         return new ResponseEntity<>(BaseResponse.builder()
                 .uuid(UUID.randomUUID().toString())
-                .data(modelService.saveModel(request))
+                .data(modelService.saveModel(request,token))
                 .status(HttpStatus.CREATED.value())
                 .build(), HttpStatus.CREATED);
     }
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody ModelUpdateRequest request) {
-        modelService.updateModel(request);
+    public ResponseEntity<?> update(@RequestBody ModelUpdateRequest request,@RequestHeader String authorization) {
+        String token = authorization.substring(7);
+        modelService.updateModel(request,token);
         return ResponseEntity
                 .ok()
                 .build();
@@ -60,8 +62,9 @@ public class ModelController {
                 .data(modelService.getModelById(id)).build());
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        modelService.deleteModel(id);
+public ResponseEntity<?> delete(@PathVariable Long id,@RequestHeader String authorization) {
+        String token = authorization.substring(7);
+        modelService.deleteModel(id,token);
         return ResponseEntity
                 .ok()
                 .build();

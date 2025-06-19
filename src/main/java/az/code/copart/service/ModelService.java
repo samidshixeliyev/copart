@@ -1,5 +1,6 @@
 package az.code.copart.service;
 
+import az.code.copart.client.AuthClient;
 import az.code.copart.dto.request.ModelCreateRequest;
 import az.code.copart.dto.request.ModelUpdateRequest;
 import az.code.copart.dto.request.filter.CityCriteria;
@@ -18,10 +19,14 @@ import az.code.copart.repository.ModelRepository;
 import az.code.copart.service.filter.CitySpecification;
 import az.code.copart.service.filter.ModelSpecification;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.security.Security;
 import java.util.List;
 
 @Service
@@ -31,7 +36,7 @@ public class ModelService {
     private final ModelMapper modelMapper;
     private final MakerRepository makerRepository;
     private final PageableMapper pageableMapper;
-
+    private final AuthClient authClient;
     // Add methods to interact with the repository and mapper as needed
     public List<ModelResponse> getAllModels() {
         return modelRepository.findAll()
@@ -54,7 +59,8 @@ public class ModelService {
         return modelMapper.fromEntityToResponse(model);
     }
 
-    public ModelResponse saveModel(ModelCreateRequest request) {
+    public ModelResponse saveModel( ModelCreateRequest request,  String token) {
+        authClient.editableUser(token);
         if(modelRepository.existsByName(request.getName())){
             throw CustomException.builder()
                     .code(409)
@@ -65,13 +71,15 @@ public class ModelService {
                 .message("Maker not found with id: " + request.getMakerId())
                 .code(404)
                 .build());
+
         return modelMapper.fromEntityToResponse(
                 modelRepository.save(
                         modelMapper.fromCreateToEntity(request,maker)
                 ));
     }
 
-    public ModelResponse updateModel(ModelUpdateRequest request) {
+    public ModelResponse updateModel(ModelUpdateRequest request, String token) {
+        authClient.editableUser(token);
         if(modelRepository.existsByName(request.getName())){
             throw CustomException.builder()
                     .code(409)
@@ -93,7 +101,8 @@ public class ModelService {
                       ));
     }
 
-    public void deleteModel(Long id) {
+    public void deleteModel(Long id,String token) {
+        authClient.editableUser(token);
         modelRepository.deleteById(id);
     }
 }

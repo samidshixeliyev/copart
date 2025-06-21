@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.io.Serializable;
 @Data
 public class FavouriteCarCriteria implements Serializable {
-    private String name;
+    private Long name;
     private Long stateId;
     private String stateName;
 }

@@ -18,7 +18,9 @@ import java.util.UUID;
 @RequestMapping("/api/v1/car-type")
 @RequiredArgsConstructor
 public class CarTypeController {
+
     private final CarTypeService carTypeService;
+
     @PostMapping
     public ResponseEntity<?> save(@RequestBody CarTypeCreateRequest request) {
         return new ResponseEntity<>(BaseResponse.builder()
@@ -27,6 +29,7 @@ public class CarTypeController {
                 .status(HttpStatus.CREATED.value())
                 .build(), HttpStatus.CREATED);
     }
+
     @PutMapping
     public ResponseEntity<?> update(@RequestBody CarTypeUpdateRequest request) {
         carTypeService.updateCarType(request);
@@ -34,6 +37,7 @@ public class CarTypeController {
                 .ok()
                 .build();
     }
+
     @GetMapping("/all")
     public ResponseEntity<?> getAll() {
         return ResponseEntity
@@ -43,6 +47,7 @@ public class CarTypeController {
                         .status(HttpStatus.OK.value())
                         .build());
     }
+
     @GetMapping
     public ResponseEntity<?> getAll(Pageable pageable, CarTypeCriteria criteria) {
         return ResponseEntity.ok(BaseResponse.builder()
@@ -51,6 +56,7 @@ public class CarTypeController {
                 .status(HttpStatus.OK.value())
                 .build());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         return ResponseEntity.ok(BaseResponse.builder()
@@ -58,6 +64,7 @@ public class CarTypeController {
                 .status(HttpStatus.OK.value())
                 .data(carTypeService.getCarTypeById(id)).build());
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         carTypeService.deleteCarType(id);

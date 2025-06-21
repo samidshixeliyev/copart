@@ -13,6 +13,7 @@ import org.mapstruct.*;
 uses = {MakerMapper.class, ModelMapper.class, CarTypeMapper.class, FuelTypeMapper.class, CityMapper.class}
 )
 public interface CarMapper {
+    //bu entitylerdeki fieldi diger fielde map edir
     @Mapping(target = "maker", source = "maker")
     @Mapping(target = "model", source = "model")
     @Mapping(target = "carType", source = "carType")

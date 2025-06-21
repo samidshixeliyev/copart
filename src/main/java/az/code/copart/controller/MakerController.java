@@ -19,7 +19,9 @@ import java.util.UUID;
 @RequestMapping("/api/v1/maker")
 @RequiredArgsConstructor
 public class MakerController {
+
     private final MakerService makerService;
+
     @PostMapping
     public ResponseEntity<?> save(@RequestBody MakerCreateRequest request,@RequestHeader String authorization) {
         String token = authorization.substring(7);
@@ -29,6 +31,7 @@ public class MakerController {
                 .status(HttpStatus.CREATED.value())
                 .build(), HttpStatus.CREATED);
     }
+
     @PutMapping
     public ResponseEntity<?> update(@RequestBody MakerUpdateRequest request,@RequestHeader String authorization) {
         String token = authorization.substring(7);
@@ -38,15 +41,6 @@ public class MakerController {
                 .build();
     }
     @GetMapping("/all")
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity
-                .ok(BaseResponse.builder()
-                        .uuid(UUID.randomUUID().toString())
-                        .data(makerService.findAll())
-                        .status(HttpStatus.OK.value())
-                        .build());
-    }
-    @GetMapping
     public ResponseEntity<?> getAll(Pageable pageable, MakerCriteria criteria) {
         return ResponseEntity.ok(BaseResponse.builder()
                 .uuid(UUID.randomUUID().toString())
@@ -54,6 +48,7 @@ public class MakerController {
                 .status(HttpStatus.OK.value())
                 .build());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(BaseResponse.builder()
@@ -61,6 +56,7 @@ public class MakerController {
                 .status(HttpStatus.OK.value())
                 .data(makerService.findById(id)).build());
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id,@RequestHeader String authorization) {
         String token = authorization.substring(7);
@@ -71,4 +67,5 @@ public class MakerController {
                         .status(HttpStatus.NO_CONTENT.value())
                         .build());
     }
+
 }

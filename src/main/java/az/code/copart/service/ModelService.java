@@ -37,16 +37,9 @@ public class ModelService {
     private final MakerRepository makerRepository;
     private final PageableMapper pageableMapper;
     private final AuthClient authClient;
+
     // Add methods to interact with the repository and mapper as needed
-    public List<ModelResponse> getAllModels() {
-        return modelRepository.findAll()
-                .stream()
-                .map(modelMapper::fromEntityToResponse)
-                .toList();
-    }
-
     public PageableResponse<ModelResponse> getAllModels(Pageable pageable, ModelCriteria criteria) {
-
         Page<Model> all = modelRepository.findAll(new ModelSpecification(criteria), pageable);
         return pageableMapper.fromModelEntityToPageableResponse(all);
     }
@@ -67,6 +60,7 @@ public class ModelService {
                     .message("Model already exists")
                     .build();
         }
+
         Maker maker = makerRepository.findById(request.getMakerId()).orElseThrow(() -> CustomException.builder()
                 .message("Maker not found with id: " + request.getMakerId())
                 .code(404)

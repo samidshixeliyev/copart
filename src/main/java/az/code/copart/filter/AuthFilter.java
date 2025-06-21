@@ -25,11 +25,15 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
+        String path = request.getRequestURI();
 //        System.out.println(authorization);
+        if(path.contains("swagger")  || path.contains("api-docs")){
+            filterChain.doFilter(request, response);
+            return;
+        }
         if (authorization != null && authorization.startsWith("Bearer ")) {
                 String bearer = authorization.substring(7);
                 String method = request.getMethod();
-                String path = request.getRequestURI();
                 try {
                     if(method.equalsIgnoreCase("GET")) {
                         authClient.checkAccess(bearer);

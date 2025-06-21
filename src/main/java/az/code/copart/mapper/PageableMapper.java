@@ -4,10 +4,12 @@ package az.code.copart.mapper;
 import az.code.copart.dto.response.*;
 import az.code.copart.entity.*;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -22,7 +24,7 @@ public interface PageableMapper {
   PageableResponse <MakerResponse>    fromMakerEntityToPageableResponse(Page<Maker> entity);
   PageableResponse <FuelTypeResponse> fromFuelTypeEntityToPageableResponse(Page<FuelType> entity);
   PageableResponse <StateResponse>    fromStateEntityToPageableResponse(Page<State> entity);
-  PageableResponse <Car> fromCarEntityToPageableResponse(Page<Car> entity);
+  PageableResponse <CarResponse> fromCarEntityToPageableResponse(Page<Car> entity);
   FavouriteCarResponse fromFavouriteCarEntityToFavouriteCarResponse(Page<Car> entity);
 
 }

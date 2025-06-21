@@ -16,6 +16,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/favourite-car")
 @RequiredArgsConstructor
 public class FavouriteCarController {
+
     private final FavouriteCarService favouriteCarService;
     // Add methods to handle requests related to favourite cars
     @PostMapping
@@ -27,6 +28,7 @@ public class FavouriteCarController {
                 .status(HttpStatus.CREATED.value())
                 .build(), HttpStatus.CREATED);
     }
+
     @PutMapping
     public ResponseEntity<?> update(@RequestBody FavouriteCarUpdateRequest request) {
         favouriteCarService.updateFavouriteCar(request);
@@ -34,6 +36,7 @@ public class FavouriteCarController {
                 .ok()
                 .build();
     }
+
     @GetMapping("/all")
     public ResponseEntity<?> getAll() {
         return ResponseEntity
@@ -43,6 +46,7 @@ public class FavouriteCarController {
                         .status(HttpStatus.OK.value())
                         .build());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         return ResponseEntity.ok(BaseResponse.builder()
@@ -50,6 +54,7 @@ public class FavouriteCarController {
                 .status(HttpStatus.OK.value())
                 .data(favouriteCarService.getFavouriteCarById(id)).build());
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         favouriteCarService.deleteFavouriteCar(id);
@@ -57,4 +62,5 @@ public class FavouriteCarController {
                 .noContent()
                 .build();
     }
+
 }

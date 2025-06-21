@@ -5,10 +5,13 @@ package az.code.copart.controller;
 
 import az.code.copart.dto.request.CarCreateRequest;
 import az.code.copart.dto.request.CarUpdateRequest;
+import az.code.copart.dto.request.filter.CarCriteria;
+import az.code.copart.dto.request.filter.CarTypeCriteria;
 import az.code.copart.dto.response.BaseResponse;
 import az.code.copart.service.CarService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +26,6 @@ import java.util.UUID;
 public class CarController {
 
     private final CarService carService;
-
 
     @PostMapping
     public ResponseEntity<?> saveCar(@RequestParam(value= "file", required = false) List<MultipartFile> file,
@@ -46,6 +48,16 @@ public class CarController {
                         .status(HttpStatus.CREATED.value())
                         .build());
     }
+    @GetMapping("/all/test")
+    public ResponseEntity<?> findAllCarsWithCriteria(Pageable pageable, CarCriteria criteria){
+        return ResponseEntity.ok(
+                BaseResponse.builder()
+                        .uuid(UUID.randomUUID().toString())
+                        .data(carService.getAllCarsWithCriteria(pageable, criteria))
+                        .status(HttpStatus.CREATED.value())
+                        .build());
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findCar(@PathVariable Long id){
@@ -69,7 +81,7 @@ public class CarController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCar(@PathVariable Long id){
+    public ResponseEntity<?> deleteCar(@PathVariable Long id) {
         carService.deleteCar(id);
         return ResponseEntity
                 .noContent()

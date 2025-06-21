@@ -31,6 +31,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CityService {
+
     private final CityRepository cityRepository;
     private final CityMapper cityMapper;
     private final StateRepository stateRepository;
@@ -48,10 +49,11 @@ public class CityService {
     }
 
     public PageableResponse<CityResponse> getAllCities(Pageable pageable, CityCriteria criteria) {
-
         Page<City> all = cityRepository.findAll(new CitySpecification(criteria), pageable);
         return pageableMapper.fromCityEntityToPageableResponse(all);
     }
+
+
     public CityResponse findById(Long id) {
         return cityRepository
                 .findById(id)
@@ -61,6 +63,7 @@ public class CityService {
                         .code(404)
                         .build());
     }
+
     public CityResponse saveCity(CityCreateRequest request,String token) {
         if (cityRepository.existsByName(request.getName())) {
             throw CustomException.builder()
@@ -80,6 +83,7 @@ public class CityService {
 
 
     }
+
     public CityResponse updateCity( CityUpdateRequest request,String token) {
         if (cityRepository.existsByName(request.getName())) {
             throw CustomException.builder()
@@ -97,6 +101,7 @@ public class CityService {
                 .build());
         return cityMapper.fromEntityToResponse(cityRepository.save(cityMapper.fromUpdateToEntity(city, request, state)));
     }
+
     public void deleteCity(Long id,String token) {
         cityRepository.deleteById(id);
     }

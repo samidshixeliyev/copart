@@ -39,15 +39,6 @@ public class CityController {
                 .build();
     }
     @GetMapping("/all")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity
-                .ok(BaseResponse.builder()
-                        .uuid(UUID.randomUUID().toString())
-                        .data(cityService.findAll())
-                        .status(HttpStatus.OK.value())
-                        .build());
-    }
-    @GetMapping
     public ResponseEntity<?> getAll(Pageable pageable, CityCriteria criteria) {
         return ResponseEntity.ok(BaseResponse.builder()
                 .uuid(UUID.randomUUID().toString())
@@ -55,6 +46,7 @@ public class CityController {
                 .status(HttpStatus.OK.value())
                 .build());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         return ResponseEntity.ok(BaseResponse.builder()

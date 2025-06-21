@@ -2,6 +2,7 @@ package az.code.copart.controller;
 
 import az.code.copart.dto.request.StateCreateRequest;
 import az.code.copart.dto.request.StateUpdateRequest;
+import az.code.copart.dto.request.filter.StateCriteria;
 import az.code.copart.dto.response.BaseResponse;
 import az.code.copart.service.StateService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,9 @@ import java.util.UUID;
 @RequestMapping("/api/v1/state")
 @RequiredArgsConstructor
 public class StateController {
+
     private final StateService stateService;
+
     // Add methods to handle requests related to states
     @PostMapping
     public ResponseEntity<?> save(@RequestBody StateCreateRequest request) {
@@ -23,6 +26,7 @@ public class StateController {
                 .status(201)
                 .body(stateService.saveState(request));
     }
+
     @PutMapping
     public ResponseEntity<?> update(@RequestBody StateUpdateRequest request) {
         stateService.updateState(request);
@@ -30,13 +34,15 @@ public class StateController {
                 .ok()
                 .build();
     }
+
     @GetMapping("/all")
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAll(StateCriteria criteria) {
         return new ResponseEntity<>(BaseResponse.builder()
                 .uuid(UUID.randomUUID().toString())
-                .data(stateService.getAllStates())
+                .data(stateService.getAllStatesWithCriteria(criteria))
                 .build(), HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         return new ResponseEntity<>(BaseResponse.builder()
@@ -45,6 +51,7 @@ public class StateController {
                 .data(stateService.getStateById(id))
                 .build(), HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         stateService.deleteState(id);
@@ -52,4 +59,5 @@ public class StateController {
                 .noContent()
                 .build();
     }
+
 }

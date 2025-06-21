@@ -30,19 +30,13 @@ public class MakerService {
     private final MakerMapper makerMapper;
     private final PageableMapper pageableMapper;
     private final AuthClient authClient;
-    // Add methods to interact with the repository and mapper as needed
-    public List<MakerResponse> findAll() {
-        return makerRepository
-                .findAll()
-                .stream()
-                .map(makerMapper::fromEntityToResponse)
-                .toList();
-    }
+
     public PageableResponse<MakerResponse> getAllMakers(Pageable pageable, MakerCriteria criteria) {
 
         Page<Maker> all = makerRepository.findAll(new MakerSpecification(criteria), pageable);
         return pageableMapper.fromMakerEntityToPageableResponse(all);
     }
+
     public MakerResponse findById(Long id) {
         return makerRepository
                 .findById(id)
@@ -52,6 +46,7 @@ public class MakerService {
                         .message("Maker not found")
                         .build());
     }
+
     public MakerResponse saveMaker(MakerCreateRequest request,String token) {
         authClient.editableUser(token);
         if(makerRepository.existsByName(request.getName())){
@@ -60,6 +55,7 @@ public class MakerService {
                     .message("Maker already exists")
                     .build();
         }
+
         return makerMapper
                 .fromEntityToResponse(
                         makerRepository.save(
@@ -67,6 +63,7 @@ public class MakerService {
                         ));
 
     }
+
     public MakerResponse updateMaker(MakerUpdateRequest request,String token) {
         authClient.editableUser(token);
         if(makerRepository.existsByName(request.getName())){
@@ -75,6 +72,7 @@ public class MakerService {
                     .message("Maker already exists")
                     .build();
         }
+
         Maker maker = makerRepository
                 .findById(request.getId())
                 .orElseThrow(() -> CustomException.builder()
@@ -87,6 +85,7 @@ public class MakerService {
                                 (makerMapper.fromUpdateToEntity(maker,request))
                         ));
     }
+
     public void deleteMaker(Long id,String token) {
         authClient.editableUser(token);
         makerRepository.deleteById(id);

@@ -13,7 +13,6 @@ import java.util.List;
 @Builder
 public class CarResponse {
     private Long id;
-    private MakerResponse maker;
     private ModelResponse model;
     private CarTypeResponse carType;
     private FuelTypeResponse fuelType;

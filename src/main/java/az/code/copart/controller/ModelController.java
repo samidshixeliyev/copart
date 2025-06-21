@@ -18,7 +18,9 @@ import java.util.UUID;
 @RequestMapping("/api/v1/model")
 @RequiredArgsConstructor
 public class ModelController {
+
     private final ModelService modelService;
+
     // Add methods to handle requests related to models
     @PostMapping
     public ResponseEntity<?> save(@RequestBody ModelCreateRequest request,@RequestHeader String authorization) {
@@ -29,6 +31,7 @@ public class ModelController {
                 .status(HttpStatus.CREATED.value())
                 .build(), HttpStatus.CREATED);
     }
+
     @PutMapping
     public ResponseEntity<?> update(@RequestBody ModelUpdateRequest request,@RequestHeader String authorization) {
         String token = authorization.substring(7);
@@ -37,23 +40,16 @@ public class ModelController {
                 .ok()
                 .build();
     }
+
     @GetMapping("/all")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity
-                .ok(BaseResponse.builder()
-                        .uuid(UUID.randomUUID().toString())
-                        .data(modelService.getAllModels())
-                        .status(HttpStatus.OK.value())
-                        .build());
-    }
-    @GetMapping
-    public ResponseEntity<?> getAll(Pageable pageable, ModelCriteria criteria) {
+    public ResponseEntity<?> getAllWithCriteria(Pageable pageable, ModelCriteria criteria) {
         return ResponseEntity.ok(BaseResponse.builder()
                 .uuid(UUID.randomUUID().toString())
                 .data(modelService.getAllModels(pageable, criteria))
                 .status(HttpStatus.OK.value())
                 .build());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         return ResponseEntity.ok(BaseResponse.builder()
@@ -61,12 +57,14 @@ public class ModelController {
                 .status(HttpStatus.OK.value())
                 .data(modelService.getModelById(id)).build());
     }
+
     @DeleteMapping("/{id}")
-public ResponseEntity<?> delete(@PathVariable Long id,@RequestHeader String authorization) {
+    public ResponseEntity<?> delete(@PathVariable Long id,@RequestHeader String authorization) {
         String token = authorization.substring(7);
         modelService.deleteModel(id,token);
         return ResponseEntity
                 .ok()
                 .build();
     }
+
 }

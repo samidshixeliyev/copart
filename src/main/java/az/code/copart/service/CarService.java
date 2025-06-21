@@ -5,12 +5,18 @@ import az.code.copart.client.FileClient;
 import az.code.copart.client.response.auth.UserResponse;
 import az.code.copart.dto.request.CarCreateRequest;
 import az.code.copart.dto.request.CarUpdateRequest;
+import az.code.copart.dto.request.filter.CarCriteria;
 import az.code.copart.dto.response.CarResponse;
+import az.code.copart.dto.response.PageableResponse;
 import az.code.copart.entity.*;
 import az.code.copart.handler.CustomException;
 import az.code.copart.mapper.CarMapper;
+import az.code.copart.mapper.PageableMapper;
 import az.code.copart.repository.*;
+import az.code.copart.service.filter.CarSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +25,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CarService {
+
     private final CarRepository carRepository;
     private final CarMapper carMapper;
     private final MakerRepository makerRepository;
@@ -28,22 +35,37 @@ public class CarService {
     private final CityRepository cityRepository;
     private final AuthClient authClient;
     private final FileClient fileClient;
+    private final PageableMapper pageableMapper;
 
     public List<CarResponse> getAllCars() {
         List<Car> cars = carRepository.findAll();
         return cars.stream()
                 .map(car -> carMapper.fromEntityToResponse(car, authClient.getUserById(car.getUserId())))
-                .peek(f ->f.setFileResponses(fileClient.getFilesByCarId(f.getId()).getBody()))
+                .peek(f -> f.setFileResponses(fileClient.getFilesByCarId(f.getId()).getBody()))
                 .toList();
+    }
+
+    public PageableResponse<CarResponse> getAllCarsWithCriteria(Pageable pageable, CarCriteria criteria) {
+        Page<Car> all = carRepository.findAll(new CarSpecification(criteria), pageable);
+        List<CarResponse> carResponseList = all.getContent().stream().map(
+                c -> {
+                    CarResponse carResponse = carMapper.fromEntityToResponse(c, authClient.getUserById(c.getUserId()));
+                    carResponse.setFileResponses(fileClient.getFilesByCarId(carResponse.getId()).getBody());
+                    return carResponse;
+                }
+        ).toList();
+        PageableResponse<CarResponse> carResponsePageableResponse = pageableMapper.fromCarEntityToPageableResponse(all);
+        carResponsePageableResponse.setContent(carResponseList);
+        return carResponsePageableResponse;
     }
 
     public CarResponse getCarById(Long id) {
         return carRepository.findById(id)
-                .map(car->carMapper.fromEntityToResponse(car,authClient.getUserById(car.getUserId())))
+                .map(car -> carMapper.fromEntityToResponse(car, authClient.getUserById(car.getUserId())))
                 .map(carResponse -> {
                     carResponse
                             .setFileResponses(fileClient.getFilesByCarId(id).getBody());
-                return carResponse;
+                    return carResponse;
                 })
                 .orElseThrow(() -> CustomException.builder()
                         .message("Car not found with id: " + id)
@@ -52,7 +74,7 @@ public class CarService {
 
     }
 
-    public CarResponse saveCar(List<MultipartFile> file, CarCreateRequest request,String token) {
+    public CarResponse saveCar(List<MultipartFile> file, CarCreateRequest request, String token) {
         Maker maker = makerRepository.findById(request.getMakerId()).orElseThrow(() -> CustomException.builder()
                 .message("Maker not found" + request.getMakerId())
                 .code(404)
@@ -78,14 +100,14 @@ public class CarService {
         CarResponse carResponse = carMapper.fromEntityToResponse(
                 carRepository.save(
                         carMapper.fromCreateToEntity(request, maker, model, carType, fuelType, city, user.getId())
-                ),user);
+                ), user);
 
-        file.forEach(file1 ->  fileClient.uploadFile(file1, carResponse.getId()));
+        file.forEach(file1 -> fileClient.uploadFile(file1, carResponse.getId()));
         carResponse.setFileResponses(fileClient.getFilesByCarId(carResponse.getId()).getBody());
         return carResponse;
     }
 
-    public CarResponse updateCar(List<MultipartFile> file, CarUpdateRequest request,String token) {
+    public CarResponse updateCar(List<MultipartFile> file, CarUpdateRequest request, String token) {
         Maker maker = makerRepository.findById(request.getMakerId()).orElseThrow(() -> CustomException.builder()
                 .message("Maker not found" + request.getMakerId())
                 .code(404)
@@ -114,8 +136,8 @@ public class CarService {
         CarResponse carResponse = carMapper.fromEntityToResponse(
                 carRepository.save(
                         carMapper.fromUpdateToEntity(car, request, maker, model, carType, fuelType, city, user.getId())
-                ),user);
-        file.forEach(file1 ->  fileClient.uploadFile(file1, carResponse.getId()));
+                ), user);
+        file.forEach(file1 -> fileClient.uploadFile(file1, carResponse.getId()));
         return carResponse;
     }
 

@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
+
 import org.springframework.stereotype.Component;
-import org.webjars.NotFoundException;
+
 
 import java.io.IOException;
 import java.io.InputStream;
